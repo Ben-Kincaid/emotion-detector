@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 
 //Types & Interfaces
-import { setLoading, SetLoading } from "duck/actions";
+import { setLoading } from "duck/actions";
 import { StoreState, RootAction, LoadingStatusTypes } from "types";
 import { Dispatch } from "redux";
 
@@ -41,7 +41,7 @@ function App(props: AppProps & DispatchProps) {
       setLoading("models", "SUCCESS");
     };
     loadModels();
-  }, []);
+  }, [setLoading]);
 
   return (
     <div className="App">

@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from "react";
+import React, { useRef, useEffect, useState, useCallback } from "react";
 import {
   detectSingleFace,
   matchDimensions,
@@ -22,7 +22,7 @@ interface FAWebcamProps {
 }
 
 function FAWebcam(props: FAWebcamProps) {
-  const { onExpressionChange, expression } = props;
+  const { onExpressionChange } = props;
   const [expressions, setExpressions] = useState<FaceExpressions | null>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -38,7 +38,7 @@ function FAWebcam(props: FAWebcamProps) {
       .withFaceExpressions();
 
     if (result) {
-      if (process.env.NODE_ENV == "development") stats.begin();
+      if (process.env.NODE_ENV === "development") stats.begin();
       const canvas = canvasRef.current as HTMLCanvasElement;
       canvas.width = 600;
       canvas.height = 600;
@@ -70,7 +70,7 @@ function FAWebcam(props: FAWebcamProps) {
             } else {
               context.lineTo(curr.x, curr.y);
             }
-            context.lineWidth = i == 0 ? 3 : 2;
+            context.lineWidth = i === 0 ? 3 : 2;
 
             context.strokeStyle = i !== 0 ? "#dc5353" : "#9e0000";
 
@@ -92,10 +92,9 @@ function FAWebcam(props: FAWebcamProps) {
       ]);
 
       setExpressions(result.expressions);
-      if (process.env.NODE_ENV == "development") stats.end();
+      if (process.env.NODE_ENV === "development") stats.end();
     }
     requestAnimationFrame(onPlay);
-    const fps = 100;
   };
 
   useEffect(() => {
@@ -113,9 +112,16 @@ function FAWebcam(props: FAWebcamProps) {
     }
   }, [videoRef]);
 
+  const callExpressionChange = useCallback(
+    (expressions: any) => {
+      onExpressionChange(expressions);
+    },
+    [onExpressionChange]
+  );
+
   useEffect(() => {
-    onExpressionChange(expressions);
-  }, [expressions]);
+    callExpressionChange(expressions);
+  }, [expressions, callExpressionChange]);
 
   return (
     <div className="fa-webcam">

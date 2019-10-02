@@ -1,5 +1,3 @@
-import { Reducer } from "redux";
-
 import { Locality } from "duck/actions";
 import { GlobalState } from "types/index";
 import { SET_LOADING } from "constants/index";

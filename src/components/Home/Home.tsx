@@ -18,9 +18,9 @@ interface HomeProps {
 
 function Home(props: HomeProps) {
   const { modelsLoading } = props;
-  const [expressionColor, setExpressionColor] = useState<string>("#101010");
   const [expressionHueShift, setExpressionHueShift] = useState<string>("0deg");
   const [expression, setExpression] = useState<any | null>(null);
+
   const onExpressionChange = (expressions: any | null) => {
     if (!expressions) return;
     const expression = Object.keys(expressions as any)
@@ -32,25 +32,9 @@ function Home(props: HomeProps) {
   };
 
   useEffect(() => {
-    const createExpressionColor = (expressionName: any) => {
-      switch (expressionName) {
-        case "suprised":
-        case "happy": {
-          return "#92DCE5";
-        }
-        case "fearful":
-        case "disgusted":
-        case "angry":
-        case "sad": {
-          return "#90544a";
-        }
-        default:
-          return "black";
-      }
-    };
     const createExpressionHueShift = (expressionName: string) => {
       switch (expressionName) {
-        case "suprised":
+        case "surprised":
         case "happy": {
           return "90deg";
         }
@@ -66,7 +50,6 @@ function Home(props: HomeProps) {
     };
     if (!expression) return;
 
-    setExpressionColor(createExpressionColor(Object.keys(expression)[0]));
     setExpressionHueShift(createExpressionHueShift(Object.keys(expression)[0]));
   }, [expression]);
 
@@ -81,9 +64,7 @@ function Home(props: HomeProps) {
       {!modelsLoading && (
         <>
           <div className="expression-title">
-            <h5>
-              {!expression ? "No Expression" : Object.keys(expression)[0]}
-            </h5>
+            <h5>{!expression ? "Loading..." : Object.keys(expression)[0]}</h5>
           </div>
           <div
             className="expression-container"
