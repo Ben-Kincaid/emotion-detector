@@ -1,14 +1,19 @@
 import React, { useRef, useEffect, useState } from "react";
 import {
-  draw,
   detectSingleFace,
   matchDimensions,
   resizeResults,
-  FaceExpressions,
-  Point
+  FaceExpressions
 } from "face-api.js";
+
+//@ts-ignore
+import Stats from "stats.js";
 import "./FAWebcam.scss";
 
+const stats = new Stats();
+if (process.env.NODE_ENV === "development") {
+  document.body.appendChild(stats.dom);
+}
 interface FAWebcamProps {
   alt?: string;
   src?: string;
@@ -33,16 +38,17 @@ function FAWebcam(props: FAWebcamProps) {
       .withFaceExpressions();
 
     if (result) {
+      if (process.env.NODE_ENV == "development") stats.begin();
       const canvas = canvasRef.current as HTMLCanvasElement;
       canvas.width = 600;
       canvas.height = 600;
       const dims = matchDimensions(canvas, { width: 600, height: 600 }, true);
 
-      // cant get this to work with Array<Point[]> - seems to expect another point as point.y?
+      // cant get this to work with Array<Point[]> - seems to expect another Point as point.y?
       const draw = (positionsObject: any) => {
         const context = canvas.getContext("2d");
         if (!context) return;
-
+        context.beginPath();
         for (var i = 0; i < positionsObject.length; i++) {
           const positionSet = positionsObject[i];
           for (var i2 = 0; i2 < positionSet.length; i2++) {
@@ -51,7 +57,7 @@ function FAWebcam(props: FAWebcamProps) {
             const next = positionSet[i2 + 1]
               ? positionSet[i2 + 1]
               : { x: positionSet[0].x, y: positionSet[1] };
-            context.beginPath();
+
             if (!prev) {
               context.moveTo(positionSet[0].x, positionSet[0].y);
             } else {
@@ -69,9 +75,9 @@ function FAWebcam(props: FAWebcamProps) {
             context.strokeStyle = i !== 0 ? "#dc5353" : "#9e0000";
 
             context.lineCap = "round";
-            context.stroke();
           }
         }
+        context.stroke();
       };
 
       const landmarks = resizeResults(result, dims).landmarks;
@@ -84,9 +90,9 @@ function FAWebcam(props: FAWebcamProps) {
         landmarks.getLeftEyeBrow(),
         landmarks.getRightEyeBrow()
       ]);
-      //   draw.drawFaceLandmarks(canvas, resizeResults(result, dims));
 
       setExpressions(result.expressions);
+      if (process.env.NODE_ENV == "development") stats.end();
     }
     requestAnimationFrame(onPlay);
     const fps = 100;
