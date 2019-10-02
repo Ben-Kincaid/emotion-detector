@@ -34,9 +34,9 @@ function FAWebcam(props: FAWebcamProps) {
 
     if (result) {
       const canvas = canvasRef.current as HTMLCanvasElement;
-      canvas.width = 2400;
-      canvas.height = 2400;
-      const dims = matchDimensions(canvas, { width: 2400, height: 2400 }, true);
+      canvas.width = 600;
+      canvas.height = 600;
+      const dims = matchDimensions(canvas, { width: 600, height: 600 }, true);
 
       // cant get this to work with Array<Point[]> - seems to expect another point as point.y?
       const draw = (positionsObject: any) => {
@@ -119,7 +119,7 @@ function FAWebcam(props: FAWebcamProps) {
         muted={true}
         playsInline={true}
       />
-      <canvas id="overlay" height={2400} width={2400} ref={canvasRef} />
+      <canvas id="overlay" height={600} width={600} ref={canvasRef} />
     </div>
   );
 }
