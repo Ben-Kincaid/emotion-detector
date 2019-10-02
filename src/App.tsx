@@ -30,10 +30,10 @@ function App(props: AppProps & DispatchProps) {
     const loadModels = async () => {
       setLoading("models", "REQUEST");
       try {
-        await faceapi.loadSsdMobilenetv1Model("/models");
-        await faceapi.loadFaceLandmarkModel("/models");
-        await faceapi.loadFaceRecognitionModel("/models");
-        await faceapi.loadFaceExpressionModel("/models");
+        await faceapi.loadSsdMobilenetv1Model("./models");
+        await faceapi.loadFaceLandmarkModel("./models");
+        await faceapi.loadFaceRecognitionModel("./models");
+        await faceapi.loadFaceExpressionModel("./models");
       } catch (error) {
         setLoading("models", "FAILED");
         throw error;
